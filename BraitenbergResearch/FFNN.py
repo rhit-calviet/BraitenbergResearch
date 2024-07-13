@@ -23,17 +23,17 @@ class ANNv2:
         self.nI = NIU
         self.nH = NHU
         self.nO = NOU
-        self.wIH = np.random.normal(0, 5, size=(NIU, NHU))  # np.zeros((NIU,NHU))
-        self.wHO = np.random.normal(0, 5, size=(NHU, NOU))  # np.zeros((NHU,NOU))
-        self.bH = np.random.normal(0, 5, size=NHU)  # np.zeros(NHU)
-        self.bO = np.random.normal(0, 5, size=NOU)  # np.zeros(NOU)
+        self.wIH = np.random.normal(0,5,size=(NIU,NHU)) #np.zeros((NIU,NHU))
+        self.wHO = np.random.normal(0,5,size=(NHU,NOU)) #np.zeros((NHU,NOU))
+        self.bH = np.random.normal(0,5,size=NHU) #np.zeros(NHU)
+        self.bO = np.random.normal(0,5,size=NOU) #np.zeros(NOU)
         self.HiddenActivation = np.zeros(NHU)
         self.OutputActivation = np.zeros(NOU)
         self.Input = np.zeros(NIU)
 
     def step(self, Input):
         self.Input = np.array(Input)
-        self.HiddenActivation = sigmoid(np.dot(self.Input, self.wIH) + self.bH)
+        self.HiddenActivation = sigmoid(np.dot(self.Input.T, self.wIH) + self.bH)
         self.OutputActivation = sigmoid(np.dot(self.HiddenActivation, self.wHO) + self.bO)
         return self.OutputActivation
 
@@ -47,8 +47,3 @@ class ANNv2:
         self.bO = 10 * genotype[self.nI * self.nH + self.nH * self.nO + self.nH:]
         self.HiddenActivation = 5*genotype
 
-    def print(self):
-        print("wIH: ", self.wIH)
-        print("wHO: ", self.wHO)
-        print("bH: ", self.bH)
-        print("bO: ", self.bO)

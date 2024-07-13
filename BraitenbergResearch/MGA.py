@@ -1,8 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from FFnn import ANNv2
-
 
 class Microbial:
 

@@ -21,10 +21,6 @@ class Vehicle:
         self.rs_yPos = self.radius * np.sin(self.orientation + self.angleOffset)
         self.ls_xPos = self.radius * np.cos(self.orientation - self.angleOffset)
         self.ls_yPos = self.radius * np.sin(self.orientation - self.angleOffset)
-        self.rhs_xPos = self.radius * np.cos(self.orientation + self.angleOffset)
-        self.rhs_yPos = self.radius * np.sin(self.orientation + self.angleOffset)
-        self.lhs_xPos = self.radius * np.cos(self.orientation - self.angleOffset)
-        self.lhs_yPos = self.radius * np.sin(self.orientation - self.angleOffset)
 
         # Neural network initiation
         self.brain = ANNv2(NI, NH, NO)
@@ -35,15 +31,9 @@ class Vehicle:
         self.rightSensor = 1 - np.sqrt((self.rs_xPos - light.x) ** 2 + (self.rs_yPos - light.y) ** 2) / 10
         self.rightSensor = np.clip(self.rightSensor, 0, 1)
 
-    def senseH(self, heat):
-        self.leftHeatSensor = 1 - np.sqrt((self.lhs_xPos - heat.x) ** 2 + (self.lhs_yPos - heat.y) ** 2) / 10
-        self.leftHeatSensor = np.clip(self.leftHeatSensor, 0, 1)
-        self.rightHeatSensor = 1 - np.sqrt((self.rhs_xPos - heat.x) ** 2 + (self.rhs_yPos - heat.y) ** 2) / 10
-        self.rightHeatSensor = np.clip(self.rightHeatSensor, 0, 1)
-
     def think(self):
         # Prepare input vector for the neural network
-        input_vector = [self.leftSensor, self.rightSensor, self.rightHeatSensor, self.leftHeatSensor]
+        input_vector = [self.leftSensor, self.rightSensor]
         # Use the neural network to compute motor outputs
         motor_outputs = self.brain.step(input_vector)
         # print(motor_outputs)
@@ -63,17 +53,13 @@ class Vehicle:
         self.ls_xPos = self.xPos + self.radius * np.cos(self.orientation - self.angleOffset)
         self.ls_yPos = self.yPos + self.radius * np.sin(self.orientation - self.angleOffset)
 
-    def update(self, light, heat):
+    def update(self, light):
         self.sense(light)
-        self.senseH(heat)
         self.think()
         self.move()
 
     def distanceLight(self, light):
         return np.sqrt((self.xPos - light.x) ** 2 + (self.yPos - light.y) ** 2)
-
-    def distanceHeat(self, heat):
-        return np.sqrt((self.xPos - heat.x) ** 2 + (self.yPos - heat.y) ** 2)
 
     def setController(self, genotype):
         self.brain.update_parameters(genotype)
